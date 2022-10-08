@@ -18,7 +18,7 @@
 
 - `K` представляет тип ключа объекта;
 - `V` представляет тип значения объекта;
-- `E` представляет тип элемента.
+- `E` представляет тип элемента. /Denis - непонятно что такое элемент/
 
 <img src="https://habrastorage.org/webt/uk/_r/dy/uk_rdymaxcj_-qfxjphhlaxstme.gif" />
 <br />
@@ -50,7 +50,7 @@
  * typescript/lib/lib.es5.d.ts
  */
 type Partial<T> = {
-    [P in keyof T]?: T[P];
+  [P in keyof T]?: T[P];
 };
 ```
 
@@ -70,7 +70,7 @@ type Partial<T> = {
  * typescript/lib/lib.es5.d.ts
  */
 type Required<T> = {
-    [P in keyof T]-?: T[P];
+  [P in keyof T]-?: T[P];
 };
 ```
 
@@ -90,7 +90,7 @@ type Required<T> = {
  * typescript/lib/lib.es5.d.ts
  */
 type Readonly<T> = {
-    readonly [P in keyof T]: T[P];
+  readonly [P in keyof T]: T[P];
 };
 ```
 
@@ -110,7 +110,7 @@ type Readonly<T> = {
  * typescript/lib/lib.es5.d.ts
  */
 type Record<K extends keyof any, T> = {
-    [P in K]: T;
+  [P in K]: T;
 };
 ```
 
@@ -128,6 +128,8 @@ type Record<K extends keyof any, T> = {
  */
 type Exclude<T, U> = T extends U ? never : T;
 ```
+
+/Denis - непонятно. Пришлось отдельно смотреть как используется новый тип never - про него никакой информации как он срабатывает в таком условном операторе не встречал, то есть статья заставляет эту информацию отдельно искать. Может быть следует пояснить читателю?/
 
 <img src="https://habrastorage.org/webt/xd/vd/ee/xdvdeemn3fxa7o4mcyg3rvf9txk.gif" />
 <br />
@@ -163,7 +165,7 @@ type Extract<T, U> = T extends U ? T : never;
  * typescript/lib/lib.es5.d.ts
  */
 type Pick<T, K extends keyof T> = {
-    [P in K]: T[P];
+  [P in K]: T[P];
 };
 ```
 
@@ -216,8 +218,7 @@ type NonNullable<T> = T extends null | undefined ? never : T;
  * Obtain the parameters of a function type in a tuple.
  * typescript/lib/lib.es5.d.ts
  */
-type Parameters<T extends (...args: any) => any> = T extends
-  (...args: infer P) => any ? P : never;
+type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
 ```
 
 ### 11. `ReturnType<Type>`
@@ -281,52 +282,52 @@ type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => i
 
 ```ts
 class User {
-    name: string;
+  name: string;
 
-    constructor(name: string) {
-        this.name = name;
-    }
+  constructor(name: string) {
+    this.name = name;
+  }
 }
 ```
 
 В приведенном примере определяется класс `User` с одним свойством экземпляров `name`. В действительности, класс - это синтаксический сахар для функции-конструктора. Если установить результат компиляции в `ES5`, то будет сгенерирован следующий код:
 
 ```js
-"use strict";
+'use strict';
 var User = /** @class */ (function () {
-    function User(name) {
-        this.name = name;
-    }
-    return User;
-}());
+  function User(name) {
+    this.name = name;
+  }
+  return User;
+})();
 ```
 
 Кроме свойств экземпляров, в классе могут определяться статические свойства. Такие свойства определяются с помощью ключевого слова `static`:
 
 ```ts
 class User {
-    static cid: string = "eft";
-    name: string;
+  static cid: string = 'eft';
+  name: string;
 
-    constructor(name: string) {
-        this.name = name;
-    }
+  constructor(name: string) {
+    this.name = name;
+  }
 }
 ```
 
 В чем разница между свойствами экземпляров и статическими свойствами? Посмотрим на компилируемый код:
 
 ```js
-"use strict";
+'use strict';
 var User = /** @class */ (function () {
-    function User(name) {
-        this.name = name;
-    }
+  function User(name) {
+    this.name = name;
+  }
 
-    User.cid = "eft";
+  User.cid = 'eft';
 
-    return User;
-}());
+  return User;
+})();
 ```
 
 Как видим, свойства экземпляров определяются в экземпляре класса, а статические свойства - в его конструкторе.
@@ -337,7 +338,7 @@ var User = /** @class */ (function () {
 
 ```ts
 class User {
-  static cid: string = "eft";
+  static cid: string = 'eft';
   name: string;
 
   constructor(name: string) {
@@ -357,24 +358,24 @@ class User {
 В чем разница между методами экземпляров и статическими методами? Посмотрим на компилируемый код:
 
 ```js
-"use strict";
+'use strict';
 var User = /** @class */ (function () {
-    function User(name) {
-        this.name = name;
-    }
+  function User(name) {
+    this.name = name;
+  }
 
-    User.printCid = function () {
-        console.log(User.cid);
-    };
+  User.printCid = function () {
+    console.log(User.cid);
+  };
 
-    User.prototype.send = function (msg) {
-        console.log("".concat(this.name, " send a message: ").concat(msg));
-    };
+  User.prototype.send = function (msg) {
+    console.log(''.concat(this.name, ' send a message: ').concat(msg));
+  };
 
-    User.cid = "eft";
+  User.cid = 'eft';
 
-    return User;
-}());
+  return User;
+})();
 ```
 
 Как видим, методы экземпляров добавляются в прототип конструктора, а статические методы в сам конструктор.
@@ -395,7 +396,7 @@ class User {
     if (value > 0 && value <= 120) {
       this._age = value;
     } else {
-      throw new Error("The set age value is invalid!");
+      throw new Error('The set age value is invalid!');
     }
   }
 }
@@ -413,7 +414,7 @@ class User {
 class Person {
   constructor(public name: string) {}
 
-  public say(words: string) :void {
+  public say(words: string): void {
     console.log(`${this.name} says：${words}`);
   }
 }
@@ -425,11 +426,11 @@ class Person {
 class Developer extends Person {
   constructor(name: string) {
     super(name);
-    this.say("Learn TypeScript")
+    this.say('Learn TypeScript');
   }
 }
 
-const bytefer = new Developer("Bytefer");
+const bytefer = new Developer('Bytefer');
 // "Bytefer says：Learn TypeScript"
 ```
 
@@ -438,11 +439,11 @@ const bytefer = new Developer("Bytefer");
 <img src="https://habrastorage.org/webt/gc/wm/7d/gcwm7dx6oqkqwczymh-j_gz74hg.jpeg" />
 <br />
 
-Однако мы вполне можем реализовывать (implements) несколько интерфейсов:
+Однако мы вполне можем реализовывать (implements) несколько интерфейсов: /Denis - как то скомкано написано и резко переход от нельзя "extends но можно реализовать"/
 
 ```ts
 interface CanSay {
-  say(words: string) :void
+  say(words: string): void;
 }
 
 interface CanWalk {
@@ -452,7 +453,7 @@ interface CanWalk {
 class Person implements CanSay, CanWalk {
   constructor(public name: string) {}
 
-  public say(words: string) :void {
+  public say(words: string): void {
     console.log(`${this.name} says：${words}`);
   }
 
@@ -484,9 +485,9 @@ class Developer extends Person {
   }
 }
 
-const bytefer = new Developer("Bytefer");
+const bytefer = new Developer('Bytefer');
 
-bytefer.say("I love TS!"); // Bytefer says I love TS!
+bytefer.say('I love TS!'); // Bytefer says I love TS!
 ```
 
 ### 5. Видимость членов
@@ -501,7 +502,7 @@ bytefer.say("I love TS!"); // Bytefer says I love TS!
 class Person {
   constructor(public name: string) {}
 
-  public say(words: string) :void {
+  public say(words: string): void {
     console.log(`${this.name} says：${words}`);
   }
 }
@@ -522,7 +523,7 @@ class Developer extends Person {
     console.log(`Base Class：${this.getClassName()}`);
   }
 }
-const bytefer = new Developer("Bytefer"); // "Base Class：Person"
+const bytefer = new Developer('Bytefer'); // "Base Class：Person"
 ```
 
 #### 5.3. `private`
@@ -535,20 +536,22 @@ const bytefer = new Developer("Bytefer"); // "Base Class：Person"
 _Обратите внимание_: `private` не делает членов по-настоящему закрытыми. Это всего лишь соглашение (как префикс `_` в `JS`). Посмотрим на компилируемый код:
 
 ```js
-"use strict";
+'use strict';
 var Person = /** @class */ (function () {
-    function Person(id, name) {
-        this.id = id;
-        this.name = name;
-    }
+  function Person(id, name) {
+    this.id = id;
+    this.name = name;
+  }
 
-    return Person;
-}());
+  return Person;
+})();
 
-var p1 = new Person(28, "bytefer");
+var p1 = new Person(28, 'bytefer');
 ```
 
 #### 5.4. Частные поля
+
+/Denis - прочитав 5.4 смутно понятна разница между private и Частными полями, может следует сделать пометку редактора? Если разницы нет то так и указать что одно и тоже просто в JS это принято позднее, если разница есть то ее подсветить /
 
 Реальные закрытые поля поддерживаются в `TS`, начиная с версии `3.8` (а в `JS` - с прошлого года):
 
@@ -602,13 +605,13 @@ const Point = class {
   public length() {
     return Math.sqrt(this.x * this.x + this.y * this.y);
   }
-}
+};
 
 const p = new Point(3, 4);
 console.log(p.length()); // 5
 ```
 
-При определении класса с помощью выражения также можно использовать ключевое слово `extends`.
+При определении класса с помощью выражения также можно использовать ключевое слово `extends`. /Denis - а что даст применение слова extends, есть ли какая то разница если без него? /
 
 ### 7. Общий класс
 
@@ -616,14 +619,11 @@ console.log(p.length()); // 5
 
 ```ts
 class Person<T> {
-  constructor(
-    public cid: T,
-    public name: string
-  ) {}
+  constructor(public cid: T, public name: string) {}
 }
 
-const p1 = new Person<number>(28, "Lolo");
-const p2 = new Person<string>("eft", "Bytefer");
+const p1 = new Person<number>(28, 'Lolo');
+const p2 = new Person<string>('eft', 'Bytefer');
 ```
 
 Рассмотрим пример инстанцирования `p1`:
@@ -666,7 +666,7 @@ class Point2D implements Point {
   readonly x: number;
   readonly y: number;
 
-constructor(x: number, y: number) {
+  constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
@@ -707,11 +707,7 @@ class Point2D implements Point {
   }
 }
 
-function newPoint(
-  pointConstructor: PointConstructor,
-  x: number,
-  y: number
-): Point {
+function newPoint(pointConstructor: PointConstructor, x: number, y: number): Point {
   return new pointConstructor(x, y);
 }
 
@@ -799,6 +795,8 @@ const Ctor1: AbstractConstructor = Square; // Ok
 <img src="https://habrastorage.org/webt/22/if/uu/22ifuulix6us48yguv9hkf-y2yc.jpeg" />
 <br />
 
+/Denis - на картинке с примером на английском в тексте ошибок по моему мнению совсем другое написано чем пояснения ниже /
+
 На основе результатов приведенного примера можно сделать следующие выводы:
 
 - при использовании класса `Person` в качестве типа значение переменной ограничивается экземпляром этого класса;
@@ -815,7 +813,7 @@ class SuperMan {
   constructor(public name: string) {}
 }
 
-const s1: SuperMan = new Person("Bytefer"); // Ok
+const s1: SuperMan = new Person('Bytefer'); // Ok
 ```
 
 ## Связанные типы / Mapped types
@@ -827,37 +825,39 @@ const s1: SuperMan = new Person("Bytefer"); // Ok
 
 Интересно, как они реализованы?
 
+/Denis - странно что к этим 4 типам вернулись повторно - они подробно разобраны в разделе Утилиты типа строки 36-272/
+
 Регистрация пользователей является распространенной задачей в веб-разработке. Определим тип `User`, в котором все ключи являются обязательными:
 
 ```ts
 type User = {
-  name: string
-  password: string
-  address: string
-  phone: string
-}
+  name: string;
+  password: string;
+  address: string;
+  phone: string;
+};
 ```
 
 Как правило, зарегистрированные пользователи могут модифицировать некоторые данные о себе. Определим новый тип `PartialUser`, в котором все ключи являются опциональными:
 
 ```ts
 type PartialUser = {
-  name?: string
-  password?: string
-  address?: string
-  phone?: string
-}
+  name?: string;
+  password?: string;
+  address?: string;
+  phone?: string;
+};
 ```
 
 В отдельных случаях требуется, чтобы все ключи были доступными только для чтения. Определим новый тип `ReadonlyUser`:
 
 ```ts
 type ReadonlyUser = {
-  readonly name: string
-  readonly password: string
-  readonly address: string
-  readonly phone: string
-}
+  readonly name: string;
+  readonly password: string;
+  readonly address: string;
+  readonly phone: string;
+};
 ```
 
 Получаем много дублирующегося кода:
@@ -902,10 +902,10 @@ type ReadonlyUser = {
 
 ```ts
 type MyPartial<T> = {
-  [P in keyof T]?: T[P]
-}
+  [P in keyof T]?: T[P];
+};
 
-type PartialUser = MyPartial<User>
+type PartialUser = MyPartial<User>;
 ```
 
 `MyPartial` используется для сопоставления типов `User` и `PartialUser`. Оператор `keyof` возвращает все ключи типа в виде объединения (union type). Тип переменной `P` меняется на каждой итерации. `T[P]` используется для получения типа значения, соответствующего атрибуту типа объекта.
@@ -919,25 +919,25 @@ type PartialUser = MyPartial<User>
 
 ```ts
 type MappedTypeWithNewKeys<T> = {
-    [K in keyof T as NewKeyType]: T[K]
-    //            ^^^^^^^^^^^^^
-}
+  [K in keyof T as NewKeyType]: T[K];
+  //            ^^^^^^^^^^^^^
+};
 ```
 
 Тип `NewKeyType` должен быть подтипом объединения `string | number | symbol`. `as` позволяет определить вспомогательный тип, генерирующий соответствующие геттеры для объектного типа:
 
 ```ts
 type Getters<T> = {
-  [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K]
-}
+  [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K];
+};
 
 interface Person {
-    name: string
-    age: number
-    location: string
+  name: string;
+  age: number;
+  location: string;
 }
 
-type LazyPerson = Getters<Person>
+type LazyPerson = Getters<Person>;
 // {
 //   getName: () => string
 //   getAge: () => number
@@ -955,15 +955,15 @@ type LazyPerson = Getters<Person>
 ```ts
 // Удаляем свойство 'kind'
 type RemoveKindField<T> = {
-    [K in keyof T as Exclude<K, 'kind'>]: T[K]
-}
+  [K in keyof T as Exclude<K, 'kind'>]: T[K];
+};
 
 interface Circle {
-    kind: 'circle'
-    radius: number
+  kind: 'circle';
+  radius: number;
 }
 
-type KindlessCircle = RemoveKindField<Circle>
+type KindlessCircle = RemoveKindField<Circle>;
 //   type KindlessCircle = {
 //       radius: number
 //   }
@@ -1012,11 +1012,10 @@ T extends U ? X : Y
 
 ```ts
 type IsString<T> = T extends string ? true : false;
-​
-type I0 = IsString<number>;  // false
-type I1 = IsString<"abc">;  // true
-type I2 = IsString<any>;  // boolean
-type I3 = IsString<never>;  // never
+type I0 = IsString<number>; // false
+type I1 = IsString<'abc'>; // true
+type I2 = IsString<any>; // boolean
+type I3 = IsString<never>; // never
 ```
 
 <img src="https://habrastorage.org/webt/po/6u/wv/po6uwvfvnydqjrvyvtdmy19hxbs.gif" />
@@ -1092,22 +1091,19 @@ never | never | "c" // => "c"
 
 ```ts
 type FunctionPropertyNames<T> = {
-    [K in keyof T]: T[K] extends Function ? K : never;
+  [K in keyof T]: T[K] extends Function ? K : never;
 }[keyof T];
 type FunctionProperties<T> = Pick<T, FunctionPropertyNames<T>>;
-​
 type NonFunctionPropertyNames<T> = {
-    [K in keyof T]: T[K] extends Function ? never : K;
+  [K in keyof T]: T[K] extends Function ? never : K;
 }[keyof T];
 type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
-​
 interface User {
   id: number;
   name: string;
   age: number;
   updateName(newName: string): void;
 }
-​
 type T5 = FunctionPropertyNames<User>; // "updateName"
 type T6 = FunctionProperties<User>; // { updateName: (newName: string) => void; }
 type T7 = NonFunctionPropertyNames<User>; // "id" | "name" | "age"
@@ -1171,7 +1167,7 @@ interface X {
 
 interface Y {
   c: number;
-  e: string
+  e: string;
 }
 
 type XY = X & Y;
@@ -1231,7 +1227,7 @@ No overload matches this call.
 ```ts
 type Side = 'top' | 'right' | 'bottom' | 'left';
 
-const side: Side = "rigth"; // Error
+const side: Side = 'rigth'; // Error
 // Type '"rigth"' is not assignable to type 'Side'.
 // Did you mean '"right"'?
 ```
@@ -1244,11 +1240,7 @@ const side: Side = "rigth"; // Error
 Определим тип `Placement` посредством расширения типа `Side`:
 
 ```ts
-type Placement = Side
-  | "left-start" | "left-end"
-  | "right-start" | "right-end"
-  | "top-start" | "top-end"
-  | "bottom-start" | "bottom-end"
+type Placement = Side | 'left-start' | 'left-end' | 'right-start' | 'right-end' | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end';
 ```
 
 Глядя на эти строковые литералы, нетрудно заметить дублирующийся код, такой как `-start` и `-end`. Кроме того, при определении большого количества литералов легко допустить очепятку.
@@ -1277,9 +1269,9 @@ type EventName<T extends string> = `${T}Changed`;
 type Concat<S1 extends string, S2 extends string> = `${S1}-${S2}`;
 type ToString<T extends string | number | boolean | bigint> = `${T}`;
 
-type T0 = EventName<"foo">; // 'fooChanged'
-type T1 = Concat<"Hello", "World">; // 'Hello-World'
-type T2 = ToString<"bytefer" | 666 | true | -1234n>;
+type T0 = EventName<'foo'>; // 'fooChanged'
+type T1 = Concat<'Hello', 'World'>; // 'Hello-World'
+type T2 = ToString<'bytefer' | 666 | true | -1234n>;
 // "bytefer" | "true" | "666" | "-1234"
 ```
 
@@ -1289,10 +1281,10 @@ type T2 = ToString<"bytefer" | 666 | true | -1234n>;
 <br />
 
 ```ts
-type T3 = EventName<"foo" | "bar" | "baz">;
+type T3 = EventName<'foo' | 'bar' | 'baz'>;
 // "fooChanged" | "barChanged" | "bazChanged"
 
-type T4 = Concat<"top" | "bottom", "left" | "right">;
+type T4 = Concat<'top' | 'bottom', 'left' | 'right'>;
 // "top-left" | "top-right" | "bottom-left" | "bottom-right"
 ```
 
@@ -1320,8 +1312,8 @@ type T4 = Concat<"top" | "bottom", "left" | "right">;
 type GetterName<T extends string> = `get${Capitalize<T>}`;
 type Cases<T extends string> = `${Uppercase<T>} ${Lowercase<T>} ${Capitalize<T>} ${Uncapitalize<T>}`;
 
-type T5 = GetterName<'name'>;   // "getName"
-type T6 = Cases<'ts'>;          // "TS ts Ts ts"
+type T5 = GetterName<'name'>; // "getName"
+type T6 = Cases<'ts'>; // "TS ts Ts ts"
 ```
 
 Возможности шаблонных типов являются очень мощными. В сочетании с условными типами и ключевым словом `infer` можно реализовать, например, такую утилиту вывода типа (type inference):
@@ -1329,8 +1321,8 @@ type T6 = Cases<'ts'>;          // "TS ts Ts ts"
 ```ts
 type InferSide<T> = T extends `${infer R}-${Alignment}` ? R : T;
 
-type T7 = InferSide<"left-start">;  // "left"
-type T8 = InferSide<"right-end">;   // "right"
+type T7 = InferSide<'left-start'>; // "left"
+type T8 = InferSide<'right-end'>; // "right"
 ```
 
 `TS 4.1` также позволяет использовать оговорку `as` для переименования ключей при сопоставлении типов:
@@ -1356,23 +1348,20 @@ type T8 = InferSide<"right-end">;   // "right"
 type PropType<T, Path extends string> = string extends Path
   ? unknown
   : Path extends keyof T
-    ? T[Path]
-    : Path extends `${infer K}.${infer R}`
-      ? K extends keyof T
-        ? PropType<T[K], R>
-        : unknown
-      : unknown;
+  ? T[Path]
+  : Path extends `${infer K}.${infer R}`
+  ? K extends keyof T
+    ? PropType<T[K], R>
+    : unknown
+  : unknown;
 
 // см. ниже
-declare function getPropValue<T, P extends string>(
-  obj: T,
-  path: P
-): PropType<T, P>;
+declare function getPropValue<T, P extends string>(obj: T, path: P): PropType<T, P>;
 ```
 
 ## Оператор `keyof`
 
-Приходилось ли вам использовать утилиты типов `Partial`, `Required`, `Pick` и `Record`?
+Приходилось ли вам использовать утилиты типов `Partial`, `Required`, `Pick` и `Record`? /Denis - смотри строку 820 тот же самый вопрос /
 
 <img src="https://habrastorage.org/webt/ze/_e/0y/ze_e0yjqw_uvhfkdedsdbiwnuk4.jpeg" />
 <br />
@@ -1384,8 +1373,8 @@ declare function getPropValue<T, P extends string>(
 ```js
 const user = {
   id: 666,
-  name: "bytefer",
-}
+  name: 'bytefer',
+};
 const keys = Object.keys(user); // ["id", "name"]
 ```
 
@@ -1395,16 +1384,16 @@ const keys = Object.keys(user); // ["id", "name"]
 type User = {
   id: number;
   name: string;
-}
+};
 type UserKeys = keyof User; // "id" | "name"
 ```
 
 После получения ключа объектного типа, мы можем получить доступ к типу значения, соответствующему данному ключу, с помощью синтаксиса, аналогичного синтаксису доступа к свойству объекта:
 
 ```ts
-type U1 = User["id"] // number
-type U2 = User["id" | "name"] // string | number
-type U3 = User[keyof User] // string | number
+type U1 = User['id']; // number
+type U2 = User['id' | 'name']; // string | number
+type U3 = User[keyof User]; // string | number
 ```
 
 В приведенном примере используется тип индексированного доступа (indexed access type) для получения типа определенного свойства типа `User`.
@@ -1417,9 +1406,9 @@ function getProperty(obj, key) {
 }
 const user = {
   id: 666,
-  name: "bytefer",
-}
-const userName = getProperty(user, "name");
+  name: 'bytefer',
+};
+const userName = getProperty(user, 'name');
 ```
 
 Функция `getProperty` принимает 2 параметра: объект (`obj`) и ключ (`key`), и возвращает значение объекта по ключу.
@@ -1437,9 +1426,7 @@ const userName = getProperty(user, "name");
 Получаем другую ошибку. Для правильного решения следует использовать параметр общего типа (generic) и `keyof`:
 
 ```ts
-function getProperty<T extends object, K extends keyof T>(
-  obj: T, key: K
-) {
+function getProperty<T extends object, K extends keyof T>(obj: T, key: K) {
   return obj[key];
 }
 ```
@@ -1467,7 +1454,7 @@ function getProperty<T extends object, K extends keyof T>(
  * typescript/lib/lib.es5.d.ts
  */
 type Partial<T> = {
-    [P in keyof T]?: T[P];
+  [P in keyof T]?: T[P];
 };
 ```
 
@@ -1478,7 +1465,7 @@ type Partial<T> = {
 
 Рассмотрим несколько полезных примеров использования оператора `typeof`.
 
-__1. Получение типа объекта__
+**1. Получение типа объекта**
 
 <img src="https://habrastorage.org/webt/cr/n8/yr/crn8yrrts2i7ywm0y2p8n3qkfmi.jpeg" />
 <br />
@@ -1490,12 +1477,12 @@ __1. Получение типа объекта__
 ```ts
 type Person = typeof man;
 
-type Address = Person["address"];
+type Address = Person['address'];
 ```
 
 `Person["address"]` - это тип индексированного доступа (indexed access type), позволяющий извлекать тип определенного свойства (`address`) из другого типа (`Person`).
 
-__2. Получение типа, представляющего все ключи перечисления в виде строк__
+**2. Получение типа, представляющего все ключи перечисления в виде строк**
 
 В `TS` перечисление (enum) - это специальный тип, компилирующийся в обычный `JS-объект`:
 
@@ -1507,14 +1494,14 @@ __2. Получение типа, представляющего все ключ
 <img src="https://habrastorage.org/webt/p5/48/js/p548jsod1phiqkonhza8b2vmil4.jpeg" />
 <br />
 
-__3. Получение типа функции__
+**3. Получение типа функции**
 
 Другим примером использования `typeof` является получение типа функции (функция в `JS` - это тоже объект). После получения типа функции можно воспользоваться встроенными утилитами типов `ReturnType` и `Parameters` для получения типа возвращаемого функцией значение и типа ее параметров:
 
 <img src="https://habrastorage.org/webt/si/8s/mh/si8smh05eho5glzluncyiskd0qe.jpeg" />
 <br />
 
-__4. Получение типа класса__
+**4. Получение типа класса**
 
 <img src="https://habrastorage.org/webt/fy/a7/qa/fya7qambyrsntleqxcnjcnx7gme.jpeg" />
 <br />
@@ -1524,7 +1511,7 @@ __4. Получение типа класса__
 <img src="https://habrastorage.org/webt/9o/rj/-x/9orj-xdyf1oj0luk3leuie3fohm.jpeg" />
 <br />
 
-__6. Получение более точного типа__
+**6. Получение более точного типа**
 
 Использование `typeof` в сочетании с утверждением `const` (const assertion), представленным в `TS 3.4`, позволяет получать более точные (precise) типы:
 
@@ -1564,7 +1551,7 @@ type U0 = UnpackedArray<T0>; // string
 _Обратите внимание_: `infer` может использоваться только в инструкции расширения условного типа. Переменная типа, объявленная посредством `infer`, доступна только в истинной ветке (true branch) условного типа.
 
 ```ts
-type Wrong1<T extends (infer U)[]> = T[0];      // Error
+type Wrong1<T extends (infer U)[]> = T[0]; // Error
 type Wrong2<T> = (infer U)[] extends T ? U : T; // Error
 type Wrong3<T> = T extends (infer U)[] ? T : U; // Error
 ```
@@ -1589,18 +1576,14 @@ _Обратите внимание_: когда речь идет о перез�
 Условные цепочки, рассмотренные в одном из предыдущих разделов, позволяют реализовать более мощную утилиту типа:
 
 ```ts
-type Unpacked<T> =
-    T extends (infer U)[] ? U :
-    T extends (...args: any[]) => infer U ? U :
-    T extends Promise<infer U> ? U :
-    T;
+type Unpacked<T> = T extends (infer U)[] ? U : T extends (...args: any[]) => infer U ? U : T extends Promise<infer U> ? U : T;
 
-type T0 = Unpacked<string>;                       // string
-type T1 = Unpacked<string[]>;                     // string
-type T2 = Unpacked<() => string>;                 // string
-type T3 = Unpacked<Promise<string>>;              // string
-type T4 = Unpacked<Promise<string>[]>;            // Promise<string>
-type T5 = Unpacked<Unpacked<Promise<string>[]>>;  // string
+type T0 = Unpacked<string>; // string
+type T1 = Unpacked<string[]>; // string
+type T2 = Unpacked<() => string>; // string
+type T3 = Unpacked<Promise<string>>; // string
+type T4 = Unpacked<Promise<string>[]>; // Promise<string>
+type T5 = Unpacked<Unpacked<Promise<string>[]>>; // string
 ```
 
 <img src="https://habrastorage.org/webt/gl/mv/46/glmv46oyygtivkfbjdjaef_kqcu.jpeg" />
@@ -1614,9 +1597,9 @@ type T5 = Unpacked<Unpacked<Promise<string>[]>>;  // string
 type User = {
   id: number;
   name: string;
-}
+};
 
-type PropertyType<T> =  T extends { id: infer U, name: infer R } ? [U, R] : T;
+type PropertyType<T> = T extends { id: infer U; name: infer R } ? [U, R] : T;
 type U3 = PropertyType<User>; // [number, string]
 ```
 
@@ -1628,7 +1611,7 @@ type U3 = PropertyType<User>; // [number, string]
 Что будет, если определить только переменную типа `U`? Давайте проверим:
 
 ```ts
-type PropertyType<T> =  T extends { id: infer U, name: infer U } ? U : T;
+type PropertyType<T> = T extends { id: infer U; name: infer U } ? U : T;
 
 type U4 = PropertyType<User>; // string | number
 ```
@@ -1641,9 +1624,9 @@ type U4 = PropertyType<User>; // string | number
 Тем не менее, в аналогичной ситуации, но в контрвариативной позиции (contravariant position), предполагается, что результирующий тип является пересечением (intersection):
 
 ```ts
-type Bar<T> = T extends { a: (x: infer U) => void, b: (x: infer U) => void } ? U : never;
+type Bar<T> = T extends { a: (x: infer U) => void; b: (x: infer U) => void } ? U : never;
 
-type U5 = Bar<{ a: (x: string) => void, b: (x: number) => void }>;  // string & number
+type U5 = Bar<{ a: (x: string) => void; b: (x: number) => void }>; // string & number
 ```
 
 <img src="https://habrastorage.org/webt/qv/pv/cc/qvpvccnegh2ndhdy5k4hombrnli.gif" />
@@ -1654,11 +1637,7 @@ type U5 = Bar<{ a: (x: string) => void, b: (x: number) => void }>;  // string & 
 Наконец, позвольте представить вам новую возможность, появившуюся в `TS 4.7`, которая делает процесс вывода типов более согласованным. Но сначала рассмотрим пример:
 
 ```ts
-type FirstIfString<T> = T extends [infer S, ...unknown[]]
-  ? S extends string
-    ? S
-    : never
-  : never;
+type FirstIfString<T> = T extends [infer S, ...unknown[]] ? (S extends string ? S : never) : never;
 ```
 
 Утилита типа `FirstIsString` использует возможности условных типов, условных цепочек и `infer`. В первом условии проверяется, что переданный тип `T` является непустым кортежем. Там же определяется переменная типа `S` для хранения типа первого элемента захваченного в процессе поиска совпадений кортежа.
@@ -1671,20 +1650,13 @@ type FirstIfString<T> = T extends [infer S, ...unknown[]]
 Как видите, утилита `FirstIsString` прекрасно справляется со своей задачей. Но можем ли мы ограничиться одним условным типом для достижения того же результата? `TS 4.7` позволяет добавлять опциональную инструкцию расширения в предполагаемый тип для определения явных ограничений (explicit constraints) переменной типа:
 
 ```ts
-type FirstIfString<T> =
-    T extends [infer S extends string, ...unknown[]]
-        ? S
-        : never;
+type FirstIfString<T> = T extends [infer S extends string, ...unknown[]] ? S : never;
 ```
 
 Напоследок реализуем утилиту для преобразования объединения в пересечение:
 
 ```ts
-type UnionToIntersection<U> = (
-  U extends any ? (arg: U) => void : never
-) extends (arg: infer R) => void
-  ? R
-  : never;
+type UnionToIntersection<U> = (U extends any ? (arg: U) => void : never) extends (arg: infer R) => void ? R : never;
 ```
 
 <img src="https://habrastorage.org/webt/yg/2a/ww/yg2awwdxf2euiarvk3kywteanci.jpeg" />
@@ -1773,9 +1745,9 @@ yarn create vite test-project --template vue-ts
 `TS` также позволяет расширять типы, определенные в существующем модуле, с помощью `declare`. Например, определим свойство `$axios` в каждом экземпляре `Vue-компонента`:
 
 ```ts
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 
-declare module "@vue/runtime-core" {
+declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
   }
@@ -1785,26 +1757,26 @@ declare module "@vue/runtime-core" {
 Добавляем свойство `$axios` в каждый экземпляр компонента с помощью свойства `globalProperties` объекта с настройками:
 
 ```ts
-import { createApp } from "vue";
-import axios from "axios";
-import App from "./App.vue";
+import { createApp } from 'vue';
+import axios from 'axios';
+import App from './App.vue';
 
 const app = createApp(App);
 
 app.config.globalProperties.$axios = axios;
 
-app.mount("#app");
+app.mount('#app');
 ```
 
 И используем его в компоненте:
 
 ```ts
-import { getCurrentInstance , ComponentInternalInstance} from "vue"
+import { getCurrentInstance, ComponentInternalInstance } from 'vue';
 
-const { proxy } = getCurrentInstance() as ComponentInternalInstance
+const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 
 proxy!.$axios
-  .get("https://jsonplaceholder.typicode.com/todos/1")
+  .get('https://jsonplaceholder.typicode.com/todos/1')
   .then((res) => res.json())
   .then(console.log);
 ```
@@ -1836,8 +1808,8 @@ interface User {
 }
 
 const user = {} as User;
-user.id = "TS001";
-user.name = "Bytefer";
+user.id = 'TS001';
+user.name = 'Bytefer';
 ```
 
 Кажется, что задача решена, но что если мы попробует добавить в объект свойство `age`?
@@ -1882,18 +1854,18 @@ interface User {
 <br />
 
 ```ts
-type User = Record<string, string>
+type User = Record<string, string>;
 
 const user = {} as User;
-user.id = "TS001"; // Ok
-user.name = "Bytefer"; // Ok
+user.id = 'TS001'; // Ok
+user.name = 'Bytefer'; // Ok
 ```
 
 В чем разница между сигнатурой доступа по индексу и утилитой `Record`? Они обе могут использоваться для определения типа объекта с неизвестными (динамическими) свойствами:
 
 ```ts
-const user1: Record<string, string> = { name: "Bytefer" }; // Ok
-const user2: { [key: string]: string } = { name: "Bytefer" }; // Ok
+const user1: Record<string, string> = { name: 'Bytefer' }; // Ok
+const user2: { [key: string]: string } = { name: 'Bytefer' }; // Ok
 ```
 
 Однако в случае с сигнатурой тип ключа может быть только `string`, `number`, `symbol` или шаблонным литералом. В случае с `Record` ключ может быть литералом или их объединением:
@@ -1909,13 +1881,13 @@ const user2: { [key: string]: string } = { name: "Bytefer" }; // Ok
  * typescript/lib/lib.es5.d.ts
  */
 type Record<K extends keyof any, T> = {
-    [P in K]: T;
+  [P in K]: T;
 };
 ```
 
 ## Перегрузки функции / Function overloads
 
-Знаете ли вы, почему на представленном ниже изображении имеется столько определений функции `ref` и зачем они нужны?
+Знаете ли вы, почему на представленном ниже изображении имеется столько определений функции `ref` и зачем они нужны? /Denis - честно говоря я так и и не понял зачем столько ref на картинке ниже хоть и прочитал раздел :) он как то оборванно выглядит - отсутствует понятие перезагрузки и для чего вводится, и концовка оборвана. Возможно это не весь текст? /
 
 <img src="https://habrastorage.org/webt/q-/dy/ko/q-dykoh3l88mhiaf3thjyrw_73s.jpeg" />
 <br />
@@ -1943,8 +1915,8 @@ function logError(msg: string | string[]) {
   }
 }
 
-logError('Отсутствует обязательное поле.')
-logError(['Отсутствует обязательное поле.', 'Пароль должен состоять минимум из 6 символов.'])
+logError('Отсутствует обязательное поле.');
+logError(['Отсутствует обязательное поле.', 'Пароль должен состоять минимум из 6 символов.']);
 ```
 
 Другим решением является использование перегрузки функции (function overloading). Перегрузка функции предполагает наличие сигнатур перегрузки (overload signatures) и сигнатуры реализации (implementation signature).
@@ -1988,10 +1960,9 @@ class Calculator {
   add(a: string, b: number): string;
   add(a: number, b: string): string;
   add(a: string | number, b: string | number) {
-
-if (typeof a === 'string' || typeof b === 'string') {
-    return a.toString() + b.toString();
-  }
+    if (typeof a === 'string' || typeof b === 'string') {
+      return a.toString() + b.toString();
+    }
     return a + b;
   }
 }
@@ -1999,5 +1970,3 @@ if (typeof a === 'string' || typeof b === 'string') {
 const calculator = new Calculator();
 const result = calculator.add('Bytefer', ' likes TS');
 ```
-
-
